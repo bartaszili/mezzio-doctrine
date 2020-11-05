@@ -1,0 +1,88 @@
+# Visual Studio Code
+# humao.rest-client
+#
+
+// Change here to match your server
+@protocol = http
+// Change here to match your server
+@hostname = 0.0.0.0
+// Change here to match your server
+@port = 8080
+
+// Don't change
+@host = {{protocol}}://{{hostname}}:{{port}}
+@path = api/pricelog
+
+// Change here to match your actual data
+@id = 45dc30fc-152b-11eb-8b2c-cdf256d62f69
+// Change here to match your actual data
+@propertyId = 7fd3b97d-1531-11eb-8b2c-cdf256d62f69
+
+##########
+# CREATE #
+##########
+
+### Properties Create or Update inserts new pricelog record
+
+########
+# VIEW #
+########
+
+### Recursiveness partially working. You loose HAL Links in response.
+
+POST {{host}}/{{path}}/view/{{id}} HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+    "Request": {
+        "Pricelog": {
+            "token": "token",
+            "recursive": true
+        }
+    }
+}
+
+##########
+# SEARCH #
+##########
+
+### Recursiveness not working on Collections
+
+POST {{host}}/{{path}}/search/?page=1 HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+    "Request": {
+        "Pricelog": {
+            "token": "token",
+            "page_limit": 100,
+            "recoursive": true,
+            "search": {
+                "price_min": 1000,
+                "price_max": 10000,
+                "created_min": "2020-01-01 00:00:00",
+                "created_max": "2020-12-31 23:59:59"
+            }
+        }
+    }
+}
+
+##########
+# DELETE #
+##########
+
+### Only exists if we ever need to delete records from database
+
+POST {{host}}/{{path}}/delete/{{id}} HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+    "Request": {
+        "Pricelog": {
+            "token": "token"
+        }
+    }
+}

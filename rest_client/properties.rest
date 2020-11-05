@@ -1,0 +1,137 @@
+# Visual Studio Code
+# humao.rest-client
+#
+
+// Change here to match your server
+@protocol = http
+// Change here to match your server
+@hostname = 0.0.0.0
+// Change here to match your server
+@port = 8080
+
+// Don't change
+@host = {{protocol}}://{{hostname}}:{{port}}
+@path = api/properties
+
+// Change here to match your actual data
+@id = 69533b69-1758-11eb-8aed-ccef499d3841
+
+##########
+# CREATE #
+##########
+
+POST {{host}}/{{path}}/create/ HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+    "Request": {
+        "Properties": {
+            "token": "token",
+            "create": {
+                "name": "Sample advert name",
+                "description": "Sample advert description",
+                "price": 1000,
+                "currency": "EUR",
+                "type": "sample_type",
+                "category": "sample_category",
+                "country": "SK",
+                "county": "Sample county",
+                "district": "Sample district",
+                "town": "Sample town",
+                "origin_id": "123456789",
+                "origin_updated": "2020-01-01 01:01:01",
+                "origin_url": "example-url.com"
+            }
+        }
+    }
+}
+
+########
+# VIEW #
+########
+
+### Recursiveness partially working. You loose HAL Links in response.
+
+POST {{host}}/{{path}}/view/{{id}} HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+    "Request": {
+        "Properties": {
+            "token": "token",
+            "recursive": true
+        }
+    }
+}
+
+##########
+# SEARCH #
+##########
+
+### Recursiveness not working on Collections
+
+POST {{host}}/{{path}}/search/?page=1 HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+    "Request": {
+        "Properties": {
+            "token": "token",
+            "page_limit": 100,
+            "recursive": true,
+            "search": {
+                "price_min": 1000,
+                "price_max": 10000,
+                "modified_min": "2020-01-01 00:00:00",
+                "modified_max": "2020-12-31 23:59:59",
+                "type": [
+                    "sample_type"
+                ],
+                "category": [
+                    "sample_category"
+                ]
+            }
+        }
+    }
+}
+
+##########
+# UPDATE #
+##########
+
+POST {{host}}/{{path}}/update/{{id}} HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+    "Request": {
+        "Properties": {
+            "token": "token",
+            "update": {
+                "name": "Updated",
+                "description": "Updated"
+            }
+        }
+    }
+}
+
+##########
+# DELETE #
+##########
+
+### Soft Delete sets 'archived(datetime)' and 'is_active(bool)' columns of record
+
+POST {{host}}/{{path}}/delete/{{id}} HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+{
+    "Request": {
+        "Properties": {
+            "token": "token"
+        }
+    }
+}
